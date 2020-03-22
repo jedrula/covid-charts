@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <CurrencyChart to="EUR"/>
+    <CurrencyChart to="EUR" />
+    <br>
+    <CurrencyChart to="USD" />
   </div>
 </template>
 
