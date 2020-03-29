@@ -7,10 +7,11 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 import CurrencyChart from './components/CurrencyChart.vue'
+import CovidPage from './components/CovidPage.vue'
 
 const routes = [
   { path: '/currencies', component: CurrencyChart },
-  // { path: '/bar', component: Bar }
+  { path: '/covid', component: CovidPage }
 ]
 
 const router = new VueRouter({
