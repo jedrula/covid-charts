@@ -16,35 +16,36 @@ import LineChart from './LineChart.vue';
 const deathsGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 // const confirmedGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 
-async function getCovidCsvText() {
-  const response = await fetch(deathsGlobalUrl);
+async function getCsvTextFromUrl(url) {
+  const response = await fetch(url);
   const text = await response.text();
   return text
 }
 
-// TODO remove ? It' s one-liner
-async function csvToJson(csvText) {
-  const json = await csv().fromString(csvText);
+async function getJsonFromCsvUrl(url) {
+  const csvText = await getCsvTextFromUrl(url);
+  const json =  await csv().fromString(csvText);
   return json;
 }
 
 export default {
   async beforeRouteEnter(to, from, next) {
-    const covidCsv = await getCovidCsvText();
-    const covidJson = await csvToJson(covidCsv);
-    next(vm => vm.covidJson = covidJson)
+    const covidDeathsJson = await getJsonFromCsvUrl(deathsGlobalUrl);
+    next((vm) => {
+      vm.covidDeathsJson = covidDeathsJson
+    });
   },
   components: {
     LineChart,
   },
   data() {
     return {
-      covidJson: [],
+      covidDeathsJson: [],
     };
   },
   computed: {
     polishCovid() {
-      return this.covidJson.find(row => row['Country/Region'] === 'Poland');
+      return this.covidDeathsJson.find(row => row['Country/Region'] === 'Poland');
     },
     polishDeathsData() {
       const datesData =  omit(this.polishCovid, ['Country/Region', 'Province/State', 'Lat', 'Long']);
