@@ -5,11 +5,12 @@
 <script>
 /* eslint-disable no-undef */
 // google is imported in index.html
+// https://github.com/CSSEGISandData/COVID-19
 export default {
   props: {
     to: {
       type: String,
-      required: true,
+      default: 'EUR',
     }
   },
   mounted() {
@@ -24,14 +25,15 @@ export default {
 
     drawBackgroundColor(rows) {
       var data = new google.visualization.DataTable();
-      data.addColumn('number', 'X');
+      data.addColumn('date', 'X');
       data.addColumn('number', `PLN / ${this.to}`);
 
       data.addRows(rows);
 
       var options = {
         hAxis: {
-          title: 'Time'
+          title: 'Time',
+          format: 'M/d',
         },
         vAxis: {
           title: 'PLN'
@@ -48,7 +50,7 @@ export default {
       const { rates } = await res.json()
       let dates = Object.keys(rates);
       dates.sort((a, b) => new Date(a) - new Date(b))
-      return dates.map((date, index) => ([index, rates[date].PLN]))
+      return dates.map((date) => ([new Date(date), rates[date].PLN]))
     },
   }
 }

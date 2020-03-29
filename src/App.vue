@@ -1,18 +1,17 @@
 <template>
   <div id="app">
-    <CurrencyChart to="EUR" />
-    <br>
-    <CurrencyChart to="USD" />
+    <p>
+      <router-link to="/currencies">Go to Currencies</router-link>
+      <!-- <router-link to="/covid">Go to Covid</router-link> -->
+    </p>
+    <router-view></router-view>
+
   </div>
 </template>
 
 <script>
-import CurrencyChart from './components/CurrencyChart.vue'
 
 export default {
-  components: {
-    CurrencyChart
-  }
 }
 </script>
 
@@ -24,5 +23,10 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.chart {
+  width: 50%;
+  display: inline-flex;
 }
 </style>
