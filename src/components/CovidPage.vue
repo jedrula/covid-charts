@@ -1,10 +1,16 @@
 <template>
   <div>
     <div>Covid page</div>
-    <h1>Deaths</h1>
+    <h1>Poland Deaths</h1>
     <LineChart :rows="polishDeathsData" />
-    <h1>Confirmed</h1>
+    <h1>Poland Confirmed</h1>
     <LineChart :rows="polishConfirmedData" />
+
+
+    <h1>Germany Deaths</h1>
+    <LineChart :rows="germanyDeathsData" />
+    <h1>Germany Confirmed</h1>
+    <LineChart :rows="germanyConfirmedData" />
   </div>
 </template>
 
@@ -66,10 +72,10 @@ export default {
       return getCountryTimeSeries(this.covidConfirmedJson, 'Poland');
     },
     germanyDeathsData() {
-
+      return getCountryTimeSeries(this.covidDeathsJson, 'Germany');
     },
-    polishConfirmedData() {
-      return getCountryTimeSeries(this.covidConfirmedJson, 'Poland');
+    germanyConfirmedData() {
+      return getCountryTimeSeries(this.covidConfirmedJson, 'Germany');
     },
   },
 }
