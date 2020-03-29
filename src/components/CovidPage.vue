@@ -11,6 +11,8 @@
     <LineChart :rows="germanyDeathsData" />
     <h1>Germany Confirmed</h1>
     <LineChart :rows="germanyConfirmedData" />
+
+    <CountryCovidChart :country="country" />
   </div>
 </template>
 
@@ -19,6 +21,7 @@ import * as csv from "csvtojson";
 import omit from 'lodash/omit';
 import toPairs from 'lodash/toPairs';
 import LineChart from './LineChart.vue';
+import CountryCovidChart from './CountryCovidChart.vue';
 
 
 const deathsGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
@@ -57,11 +60,13 @@ export default {
   },
   components: {
     LineChart,
+    CountryCovidChart,
   },
   data() {
     return {
       covidDeathsJson: [],
       covidConfirmedJson: [],
+      country: 'Poland',
     };
   },
   computed: {
