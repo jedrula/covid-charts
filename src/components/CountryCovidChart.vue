@@ -2,10 +2,10 @@
   <div>
     <h1>Dates</h1>
     {{ dates }}
-    <h1>{{country}} Deaths</h1>
-    <LineChart :rows="deathsData" />
-    <h1>{{country}} Confirmed</h1>
-    <LineChart :rows="confirmedData" />
+    <h1>{{countries}} Deaths</h1>
+    <LineChart :rows="deathsData" :headerLabels="headerLabels"/>
+    <h1>{{countries}} Confirmed</h1>
+    <LineChart :rows="confirmedData" :headerLabels="headerLabels"/>
   </div>
 </template>
 
@@ -47,14 +47,20 @@ export default {
       const datesData = getDatesData(this.deathsRows[0]);
       return Object.keys(datesData);
     },
+    headerLabels() {
+      return [
+        { type: 'date', label: 'date' },
+        ...this.countries.map((country) => ({ type: 'number', label: country })),
+      ];
+    },
     deathsData() {
       return getCountryTimeSeries(this.deathsRows[0]);
     },
     confirmedData() {
       return getCountryTimeSeries(this.confirmedRows[0]);
     },
-    country() {
-      return this.rowToCountry(this.deathsRows[0]);
+    countries() {
+      return this.deathsRows.map((row) => this.rowToCountry(row))
     },
   }
 };

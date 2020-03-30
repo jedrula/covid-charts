@@ -14,26 +14,26 @@ export default {
       type: Array,
       required: true,
     },
+    headerLabels: {
+      type: Array,
+      required: true,
+    },
   },
   mounted() {
-    google.charts.setOnLoadCallback(() => this.drawChart(this.rows));
+    google.charts.setOnLoadCallback(() => this.drawChart());
   },
 
   watch: {
     rows() {
-      this.drawChart(this.rows);
+      this.drawChart();
     },
   },
 
   methods: {
-    drawChart(rows) {
-      var data = new google.visualization.DataTable();
-      data.addColumn('date', 'X');
-      data.addColumn('number', 'TODO');
+    drawChart() {
+      const data = new google.visualization.arrayToDataTable([this.headerLabels, ...this.rows]);
 
-      data.addRows(rows);
-
-      var options = {
+      const options = {
         hAxis: {
           title: 'Time',
           format: 'dd.MM',
@@ -44,7 +44,7 @@ export default {
         backgroundColor: '#f1f8e9'
       };
 
-      var chart = new google.visualization.LineChart(this.$refs.chart);
+      const chart = new google.visualization.LineChart(this.$refs.chart);
       chart.draw(data, options);
     },
   }
