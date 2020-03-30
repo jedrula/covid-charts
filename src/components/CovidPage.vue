@@ -1,13 +1,16 @@
 <template>
   <div>
-    <select v-model="selectedIndex">
-      <option disabled value="">Please select Country + Province</option>
-      <option v-for="(row, index) in covidDeathsJson" :key="index" :value="index">{{rowToCountry(row)}}</option>
-    </select>
+    <div v-for="(selectedIndex, index) in selectedIndexes" :key="index">
+      <select v-model="selectedIndexes[index]">
+        <option disabled value="">Please select Country + Province</option>
+        <option v-for="(row, index) in covidDeathsJson" :key="index" :value="index">{{rowToCountry(row)}}</option>
+      </select>
+    </div>
+    <button @click="selectedIndexes.push(0)">Add</button>
     <CountryCovidChart
-      v-if="covidDeathsJson.length"
-      :deathsRows="[covidDeathsJson[selectedIndex], covidDeathsJson[selectedIndex + 1]]"
-      :confirmedRows="[covidConfirmedJson[selectedIndex], covidConfirmedJson[selectedIndex + 1]]"
+      v-if="covidDeathsJson.length && selectedIndexes.length"
+      :deathsRows="selectedIndexes.map((selectedIndex) => covidDeathsJson[selectedIndex])"
+      :confirmedRows="selectedIndexes.map((selectedIndex) => covidConfirmedJson[selectedIndex])"
       :rowToCountry="rowToCountry"
     />
   </div>
@@ -49,7 +52,7 @@ export default {
     return {
       covidDeathsJson: [],
       covidConfirmedJson: [],
-      selectedIndex: 0,
+      selectedIndexes: [],
     };
   },
   methods: {
