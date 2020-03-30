@@ -5,6 +5,7 @@
         <option disabled value="">Please select Country + Province</option>
         <option v-for="(row, index) in covidDeathsJson" :key="index" :value="index">{{rowToCountry(row)}}</option>
       </select>
+      <button @click="selectedIndexes.splice(index, 1)">Remove</button>
     </div>
     <button @click="selectedIndexes.push(0)">Add</button>
     <CountryCovidChart
