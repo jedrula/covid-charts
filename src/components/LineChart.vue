@@ -34,10 +34,10 @@ export default {
       var options = {
         hAxis: {
           title: 'Time',
-          format: 'M/d',
+          format: 'dd.MM',
         },
         vAxis: {
-          title: 'TODO2'
+          title: 'count'
         },
         backgroundColor: '#f1f8e9'
       };
