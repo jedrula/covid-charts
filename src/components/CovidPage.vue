@@ -53,7 +53,7 @@ export default {
     return {
       covidDeathsJson: [],
       covidConfirmedJson: [],
-      selectedIndexes: [],
+      selectedIndexes: [42, 183],
     };
   },
   methods: {

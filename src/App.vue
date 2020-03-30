@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div class="navigation">
+    <!-- <div class="navigation">
       <router-link to="/currencies">Go to Currencies</router-link>
       <router-link to="/covid">Go to Covid</router-link>
-    </div>
+    </div> -->
     <router-view></router-view>
 
   </div>
