@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h1>Dates</h1>
-    {{ dates }}
     <h1>{{countries}} Deaths</h1>
     <LineChart :rows="deathsData" :headerLabels="headerLabels"/>
     <h1>{{countries}} Confirmed</h1>
@@ -10,23 +8,11 @@
 </template>
 
 <script>
-import toPairs from 'lodash/toPairs';
 import LineChart from './LineChart.vue';
 import omit from 'lodash/omit';
 
 function getDatesData(row) {
   return omit(row, ['Country/Region', 'Province/State', 'Lat', 'Long']);
-}
-
-function getDates(row) {
-  const datesData = getDatesData(row);
-  return Object.keys(datesData).map((str) => new Date(str));
-}
-
-function getCountryTimeSeries(row) {
-  const datesData =  getDatesData(row);
-  const pairs = toPairs(datesData);
-  return pairs.map(([dateString, value]) => ([new Date(dateString), parseInt(value)]));
 }
 
 export default {
@@ -49,7 +35,8 @@ export default {
   },
   computed: {
     dates() {
-      return getDates(this.deathsRows[0]);
+      const datesData = getDatesData(this.deathsRows[0]);
+      return Object.keys(datesData);
     },
     headerLabels() {
       return [
@@ -58,10 +45,10 @@ export default {
       ];
     },
     deathsData() {
-      return getCountryTimeSeries(this.deathsRows[0]);
+      return this.dates.map((dateString) => ([new Date(dateString), ...this.deathsRows.map((row) => row[dateString])]));
     },
     confirmedData() {
-      return getCountryTimeSeries(this.confirmedRows[0]);
+      return this.dates.map((dateString) => ([new Date(dateString), ...this.confirmedRows.map((row) => row[dateString])]));
     },
     countries() {
       return this.deathsRows.map((row) => this.rowToCountry(row))
