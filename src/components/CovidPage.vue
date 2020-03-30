@@ -6,8 +6,8 @@
     </select>
     <CountryCovidChart
       v-if="covidDeathsJson.length"
-      :deathsRows="[covidDeathsJson[selectedIndex]]"
-      :confirmedRows="[covidConfirmedJson[selectedIndex]]"
+      :deathsRows="[covidDeathsJson[selectedIndex], covidDeathsJson[selectedIndex + 1]]"
+      :confirmedRows="[covidConfirmedJson[selectedIndex], covidConfirmedJson[selectedIndex + 1]]"
       :rowToCountry="rowToCountry"
     />
   </div>
