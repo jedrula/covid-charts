@@ -18,6 +18,11 @@ function getDatesData(row) {
   return omit(row, ['Country/Region', 'Province/State', 'Lat', 'Long']);
 }
 
+function getDates(row) {
+  const datesData = getDatesData(row);
+  return Object.keys(datesData).map((str) => new Date(str));
+}
+
 function getCountryTimeSeries(row) {
   const datesData =  getDatesData(row);
   const pairs = toPairs(datesData);
@@ -44,8 +49,7 @@ export default {
   },
   computed: {
     dates() {
-      const datesData = getDatesData(this.deathsRows[0]);
-      return Object.keys(datesData);
+      return getDates(this.deathsRows[0]);
     },
     headerLabels() {
       return [
