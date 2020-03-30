@@ -4,7 +4,7 @@
       <option disabled value="">Please select Country + Province</option>
       <option v-for="(row, index) in covidDeathsJson" :key="index" :value="index">{{rowToCountry(row)}}</option>
     </select>
-    <CountryCovidChart v-if="covidDeathsJson.length" :deathsRow="covidDeathsJson[selectedIndex]" :confirmedRow="covidConfirmedJson[selectedIndex]" :rowToCountry="rowToCountry" />
+    <CountryCovidChart v-if="covidDeathsJson.length" :deathsRows="[covidDeathsJson[selectedIndex]]" :confirmedRows="[covidConfirmedJson[selectedIndex]]" :rowToCountry="rowToCountry" />
   </div>
 </template>
 

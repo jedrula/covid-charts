@@ -3,6 +3,8 @@
 </template>
 
 <script>
+// https://www.npmjs.com/package/vue-multiselect
+
 /* eslint-disable no-undef */
 // google is imported in index.html
 // https://github.com/CSSEGISandData/COVID-19
@@ -14,17 +16,17 @@ export default {
     },
   },
   mounted() {
-    google.charts.setOnLoadCallback(() => this.drawBackgroundColor(this.rows));
+    google.charts.setOnLoadCallback(() => this.drawChart(this.rows));
   },
 
   watch: {
     rows() {
-      this.drawBackgroundColor(this.rows);
+      this.drawChart(this.rows);
     },
   },
 
   methods: {
-    drawBackgroundColor(rows) {
+    drawChart(rows) {
       var data = new google.visualization.DataTable();
       data.addColumn('date', 'X');
       data.addColumn('number', 'TODO');
