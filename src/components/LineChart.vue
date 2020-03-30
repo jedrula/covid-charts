@@ -17,6 +17,12 @@ export default {
     google.charts.setOnLoadCallback(() => this.drawBackgroundColor(this.rows));
   },
 
+  watch: {
+    rows() {
+      this.drawBackgroundColor(this.rows);
+    },
+  },
+
   methods: {
     drawBackgroundColor(rows) {
       var data = new google.visualization.DataTable();
