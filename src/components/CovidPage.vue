@@ -28,6 +28,11 @@ import * as csv from "csvtojson";
 import CountryCovidChart from './CountryCovidChart.vue';
 import countryByPopulation from '../data/country-by-population.json';
 
+const hasPopulationData = (row) => {
+  const covidCountry = rowToCountry(row);
+  return countryByPopulation.find(({ country }) => country === covidCountry);
+}
+
 const deathsGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 const confirmedGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv';
 
@@ -54,9 +59,9 @@ function rowToCountry(row) {
 
 export default {
   async beforeRouteEnter(to, from, next) {
-    const [covidDeathsJson, covidConfirmedJson] = await Promise.all([getJsonFromCsvUrl(deathsGlobalUrl), getJsonFromCsvUrl(confirmedGlobalUrl)]);
+    const [covidDeathsFullJson, covidConfirmedFullJson] = await Promise.all([getJsonFromCsvUrl(deathsGlobalUrl), getJsonFromCsvUrl(confirmedGlobalUrl)]);
 
-    const countries = covidDeathsJson.map(rowToCountry);
+    // Missing these:
     // Diamond Princess
     // Holy See
     // Montenegro
@@ -67,12 +72,10 @@ export default {
     // Kosovo
     // "MS Zaandam"
     // Plus All of those with provinces: Australia, Canada, China, Congo, France, Netherlands
-    const missingPopulationData = countries.filter((covidCountry) => !countryByPopulation.find(({ country }) => country === covidCountry));
-    console.log(missingPopulationData);
     // console.log(countries);
     next((vm) => {
-      vm.covidDeathsJson = covidDeathsJson
-      vm.covidConfirmedJson = covidConfirmedJson;
+      vm.covidDeathsFullJson = covidDeathsFullJson;
+      vm.covidConfirmedFullJson = covidConfirmedFullJson;
     });
   },
   components: {
@@ -80,13 +83,21 @@ export default {
   },
   data() {
     return {
-      covidDeathsJson: [],
-      covidConfirmedJson: [],
+      covidDeathsFullJson: [],
+      covidConfirmedFullJson: [],
       selectedIndexes: [
-        91, // Czechia
-        183, // Poland
+        36, // Czechia
+        115, // Poland
       ],
     };
+  },
+  computed: {
+    covidDeathsJson() {
+      return this.covidDeathsFullJson.filter(hasPopulationData);
+    },
+    covidConfirmedJson() {
+      return this.covidConfirmedFullJson.filter(hasPopulationData);
+    },
   },
   methods: {
     rowToCountry,
