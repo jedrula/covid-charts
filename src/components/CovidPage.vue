@@ -18,8 +18,8 @@
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
       <div>Population data taken from <a target="_blank" href="https://github.com/samayo/country-json/edit/master/src/country-by-population.json">country-json</a></div>
+      <div>For feature requests or issues send me an email <a href="mailto:andrzej.swaton@gmail.com">andrzej.swaton@gmail.com</a></div>
     </footer>
-    
   </div>
 </template>
 
