@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import LineChart from './LineChart.vue';
 import omit from 'lodash/omit';
+import LineChart from './LineChart.vue';
 
 function getDatesData(row) {
   return omit(row, ['Country/Region', 'Province/State', 'Lat', 'Long']);
