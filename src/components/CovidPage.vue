@@ -13,6 +13,7 @@
       :deathsRows="selectedDeathRows"
       :confirmedRows="selectedConfirmedRows"
       :rowToCountry="rowToCountry"
+      :selectedPopulations="selectedPopulations"
     />
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
@@ -28,7 +29,14 @@ import * as csv from "csvtojson";
 import CountryCovidChart from './CountryCovidChart.vue';
 import countryByPopulation from '../data/country-by-population.json';
 
-const hasPopulationData = (row) => {
+
+/**
+ * Finds population data entry that corresponds to thr covid data row.
+ * I filter out those rows that do not have this data.
+ * TODO make sure that all covid data has entries with population
+ */
+// TODO move to standalone file
+const findPopulationData = (row) => {
   const covidCountry = rowToCountry(row);
   return countryByPopulation.find(({ country }) => country === covidCountry);
 }
@@ -48,6 +56,7 @@ async function getJsonFromCsvUrl(url) {
   return json;
 }
 
+// TODO move to standalone file
 function rowToCountry(row) {
   let option = row['Country/Region'];
   const province = row['Province/State'];
@@ -93,16 +102,19 @@ export default {
   },
   computed: {
     covidDeathsJson() {
-      return this.covidDeathsFullJson.filter(hasPopulationData);
+      return this.covidDeathsFullJson.filter(findPopulationData);
     },
     covidConfirmedJson() {
-      return this.covidConfirmedFullJson.filter(hasPopulationData);
+      return this.covidConfirmedFullJson.filter(findPopulationData);
     },
     selectedDeathRows() {
       return this.selectedIndexes.map((selectedIndex) => this.covidDeathsJson[selectedIndex]);
     },
     selectedConfirmedRows() {
       return this.selectedIndexes.map((selectedIndex) => this.covidConfirmedJson[selectedIndex]);
+    },
+    selectedPopulations() {
+      return this.selectedDeathRows.map(findPopulationData);
     },
   },
   methods: {
