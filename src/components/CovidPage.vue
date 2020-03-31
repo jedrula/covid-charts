@@ -26,7 +26,7 @@
 import * as csv from "csvtojson";
 
 import CountryCovidChart from './CountryCovidChart.vue';
-// import countryByPopulation from '../data/country-by-population.json';
+import countryByPopulation from '../data/country-by-population.json';
 
 const deathsGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 const confirmedGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv';
@@ -57,7 +57,9 @@ export default {
     const [covidDeathsJson, covidConfirmedJson] = await Promise.all([getJsonFromCsvUrl(deathsGlobalUrl), getJsonFromCsvUrl(confirmedGlobalUrl)]);
 
     const countries = covidDeathsJson.map(rowToCountry);
-    console.log(countries);
+    const missingPopulationData = countries.filter((covidCountry) => !countryByPopulation.find(({ country }) => country === covidCountry));
+    console.log(missingPopulationData);
+    // console.log(countries);
     next((vm) => {
       vm.covidDeathsJson = covidDeathsJson
       vm.covidConfirmedJson = covidConfirmedJson;
