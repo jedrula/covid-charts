@@ -90,7 +90,7 @@ export default {
       return (row, rowIndex, dateString) => {
         const total = row[dateString];
         return this.perMilionCount
-          ? total / this.populaionsInMillions[rowIndex]
+          ? parseInt(total / this.populaionsInMillions[rowIndex], 10)
           : total;
       };
     },
