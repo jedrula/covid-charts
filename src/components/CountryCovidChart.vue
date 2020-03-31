@@ -2,6 +2,10 @@
   <div>
     <input type="checkbox" id="checkbox" v-model="perMilionCount">
     <label for="checkbox">Per Milion</label>
+    <div class="dates-range">
+      <span class="start-date-label">Adjust start date ({{startDate}})</span>
+      <input type="range" min="0" :max="allDates.length - 2" v-model="minDateIndex">
+    </div>
     <h1>{{countries}} {{deathsLabel}}</h1>
     <LineChart
       :rows="deathsData"
@@ -58,6 +62,7 @@ export default {
       // nation has 100'000
       // if it had 1 milion 30 would die
       perMilionCount: false,
+      minDateIndex: 0,
     };
   },
   computed: {
@@ -67,9 +72,15 @@ export default {
     confirmedLabel() {
       return this.perMilionCount ? 'Confirmed cases (Per Milion)' : 'Confirmed cases'
     },
-    dates() {
+    allDates() {
       const datesData = getDatesData(this.deathsRows[0]);
       return Object.keys(datesData);
+    },
+    dates() {
+      return this.allDates.slice(this.minDateIndex);
+    },
+    startDate() {
+      return this.allDates[this.minDateIndex];
     },
     headerLabels() {
       return [
@@ -90,7 +101,7 @@ export default {
       return (row, rowIndex, dateString) => {
         const total = row[dateString];
         return this.perMilionCount
-          ? parseInt(total / this.populaionsInMillions[rowIndex], 10)
+          ? Math.round(total / this.populaionsInMillions[rowIndex])
           : total;
       };
     },
@@ -100,3 +111,16 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.dates-range {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.start-date-label {
+  width: 200px;
+  text-align: left;
+}
+</style>
