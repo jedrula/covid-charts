@@ -10,8 +10,8 @@
     <button @click="selectedIndexes.push(0)">Add</button>
     <CountryCovidChart
       v-if="covidDeathsJson.length && selectedIndexes.length"
-      :deathsRows="selectedIndexes.map((selectedIndex) => covidDeathsJson[selectedIndex])"
-      :confirmedRows="selectedIndexes.map((selectedIndex) => covidConfirmedJson[selectedIndex])"
+      :deathsRows="selectedDeathRows"
+      :confirmedRows="selectedConfirmedRows"
       :rowToCountry="rowToCountry"
     />
     <footer>
@@ -97,6 +97,12 @@ export default {
     },
     covidConfirmedJson() {
       return this.covidConfirmedFullJson.filter(hasPopulationData);
+    },
+    selectedDeathRows() {
+      return this.selectedIndexes.map((selectedIndex) => this.covidDeathsJson[selectedIndex]);
+    },
+    selectedConfirmedRows() {
+      return this.selectedIndexes.map((selectedIndex) => this.covidConfirmedJson[selectedIndex]);
     },
   },
   methods: {
