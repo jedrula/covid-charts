@@ -14,6 +14,7 @@
       :confirmedRows="selectedIndexes.map((selectedIndex) => covidConfirmedJson[selectedIndex])"
       :rowToCountry="rowToCountry"
     />
+    <footer>Data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></footer>
   </div>
 </template>
 
@@ -68,3 +69,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+footer {
+  margin-top: 20px;
+}
+</style>
