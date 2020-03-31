@@ -57,6 +57,16 @@ export default {
     const [covidDeathsJson, covidConfirmedJson] = await Promise.all([getJsonFromCsvUrl(deathsGlobalUrl), getJsonFromCsvUrl(confirmedGlobalUrl)]);
 
     const countries = covidDeathsJson.map(rowToCountry);
+    // Diamond Princess
+    // Holy See
+    // Montenegro
+    // Serbia
+    // Taiwan*
+    // United Kingdom
+    // West Bank and Gaza 
+    // Kosovo
+    // "MS Zaandam"
+    // Plus All of those with provinces: Australia, Canada, China, Congo, France, Netherlands
     const missingPopulationData = countries.filter((covidCountry) => !countryByPopulation.find(({ country }) => country === covidCountry));
     console.log(missingPopulationData);
     // console.log(countries);

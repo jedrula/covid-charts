@@ -45,7 +45,7 @@
       "population": "2930450"
   },
   {
-      "country": "Aruba",
+      "country": "Netherlands (Aruba)",
       "population": "105264"
   },
   {
@@ -153,7 +153,7 @@
       "population": "36624199"
   },
   {
-      "country": "Cape Verde",
+      "country": "Cabo Verde",
       "population": "546388"
   },
   {
@@ -217,7 +217,7 @@
       "population": "1179551"
   },
   {
-      "country": "Czech Republic",
+      "country": "Czechia",
       "population": "10618303"
   },
   {
@@ -237,7 +237,7 @@
       "population": "10766998"
   },
   {
-      "country": "East Timor",
+      "country": "Timor-Leste",
       "population": "1296311"
   },
   {
@@ -277,11 +277,11 @@
       "population": "2910"
   },
   {
-      "country": "Faroe Islands",
+      "country": "Denmark (Faroe Islands)",
       "population": "49290"
   },
   {
-      "country": "Fiji Islands",
+      "country": "Fiji",
       "population": "905502"
   },
   {
@@ -333,7 +333,7 @@
       "population": "11159773"
   },
   {
-      "country": "Greenland",
+      "country": "Denmark (Greenland)",
       "population": "56480"
   },
   {
@@ -421,7 +421,7 @@
       "population": "59359900"
   },
   {
-      "country": "Ivory Coast",
+      "country": "Cote d'Ivoire",
       "population": "24294750"
   },
   {
@@ -477,7 +477,7 @@
       "population": "4731906"
   },
   {
-      "country": "Libyan Arab Jamahiriya",
+      "country": "Libya",
       "population": "5605000"
   },
   {
@@ -577,7 +577,7 @@
       "population": "29668834"
   },
   {
-      "country": "Myanmar",
+      "country": "Burma",
       "population": "53370609"
   },
   {
@@ -709,7 +709,7 @@
       "population": "19679306"
   },
   {
-      "country": "Russian Federation",
+      "country": "Russia",
       "population": "143989754"
   },
   {
@@ -797,7 +797,7 @@
       "population": null
   },
   {
-      "country": "South Korea",
+      "country": "Korea, South",
       "population": "50982212"
   },
   {
@@ -809,7 +809,7 @@
       "population": "46354321"
   },
   {
-      "country": "SriLanka",
+      "country": "Sri Lanka",
       "population": "20876917"
   },
   {
@@ -825,7 +825,7 @@
       "population": "3200"
   },
   {
-      "country": "Swaziland",
+      "country": "Eswatini",
       "population": "1008000"
   },
   {
@@ -909,7 +909,7 @@
       "population": "66181585"
   },
   {
-      "country": "United States",
+      "country": "US",
       "population": "324459463"
   },
   {
