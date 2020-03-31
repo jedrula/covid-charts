@@ -18,6 +18,10 @@ export default {
       type: Array,
       required: true,
     },
+    vAxisTitle: {
+      type: String,
+      required: true,
+    },
   },
   mounted() {
     google.charts.setOnLoadCallback(() => this.drawChart());
@@ -35,11 +39,11 @@ export default {
 
       const options = {
         hAxis: {
-          title: 'Time',
+          title: 'Date',
           format: 'dd.MM',
         },
         vAxis: {
-          title: 'count'
+          title: this.vAxisTitle,
         },
         backgroundColor: '#f1f8e9'
       };

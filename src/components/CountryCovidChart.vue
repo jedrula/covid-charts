@@ -1,9 +1,9 @@
 <template>
   <div>
     <h1>{{countries}} Deaths</h1>
-    <LineChart :rows="deathsData" :headerLabels="headerLabels"/>
+    <LineChart :rows="deathsData" :headerLabels="headerLabels" vAxisTitle="Deaths" />
     <h1>{{countries}} Confirmed</h1>
-    <LineChart :rows="confirmedData" :headerLabels="headerLabels"/>
+    <LineChart :rows="confirmedData" :headerLabels="headerLabels" vAxisTitle="Confirmed cases" />
   </div>
 </template>
 
