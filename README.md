@@ -1,4 +1,4 @@
-# covid-currencies-vue
+# covid-charts
 
 ## Project setup
 ```
