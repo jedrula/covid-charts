@@ -31,6 +31,7 @@ export default {
 
   mounted() {
     this.$watch('chart', this.drawChart, { immediate: true });
+    this.$watch('chartData', this.drawChart, { immediate: true });
     // TODO destroy ?
   },
 
