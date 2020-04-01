@@ -1,5 +1,11 @@
 <template>
   <div>
+    <div>
+      <input type="radio" id="one" value="LineChart" v-model="chartType">
+      <label for="one">Line Chart</label>
+      <input type="radio" id="two" value="ColumnChart" v-model="chartType">
+      <label for="two">Column Chart</label>
+    </div>
     <input type="checkbox" id="checkbox" v-model="perMilionCount">
     <label for="checkbox">Per Milion</label>
     <div class="dates-range">
@@ -11,12 +17,14 @@
       :rows="deathsData"
       :headerLabels="headerLabels"
       :vAxisTitle="deathsLabel"
+      :chartType="chartType"
     />
     <h1>{{countries}} {{confirmedLabel}}</h1>
     <LineChart
       :rows="confirmedData"
       :headerLabels="headerLabels"
       :vAxisTitle="confirmedLabel"
+      :chartType="chartType"
     />
   </div>
 </template>
@@ -63,6 +71,7 @@ export default {
       // if it had 1 milion 30 would die
       perMilionCount: false,
       minDateIndex: 0,
+      chartType: 'LineChart',
     };
   },
   computed: {

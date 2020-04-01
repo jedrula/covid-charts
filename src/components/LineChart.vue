@@ -4,11 +4,7 @@
 
 <script>
 import get from 'lodash/get';
-// https://www.npmjs.com/package/vue-multiselect
 
-/* eslint-disable no-undef */
-// google is imported in index.html
-// https://github.com/CSSEGISandData/COVID-19
 export default {
   props: {
     rows: {
@@ -26,16 +22,16 @@ export default {
     incremental: {
       type: Boolean,
       default: false,
-    }
-  },
-  mounted() {
-    google.charts.setOnLoadCallback(() => this.drawChart());
+    },
+    chartType: {
+      type: String,
+      required: true,
+    },
   },
 
-  watch: {
-    chartData() {
-      this.drawChart();
-    },
+  mounted() {
+    this.$watch('chart', this.drawChart, { immediate: true });
+    // TODO destroy ?
   },
 
   computed: {
@@ -49,6 +45,8 @@ export default {
       });
     },
     chartData() {
+      /* eslint-disable no-undef */
+      // google is imported in index.html
       return new google.visualization.arrayToDataTable([this.headerLabels, ...this.shownRows]);
     },
     shownRows() {
@@ -66,12 +64,14 @@ export default {
         backgroundColor: '#f1f8e9'
       };
     },
+    chart() {
+      return new google.visualization[this.chartType](this.$refs.chart);
+    },
   },
 
   methods: {
     drawChart() {
-      const chart = new google.visualization.ColumnChart(this.$refs.chart);
-      chart.draw(this.chartData, this.options);
+      this.chart.draw(this.chartData, this.options);
     },
   }
 }
