@@ -6,6 +6,12 @@
       <input type="radio" id="two" value="ColumnChart" v-model="chartType">
       <label for="two">Column Chart</label>
     </div>
+    <div>
+      <input type="radio" id="three" :value="true" v-model="incremental">
+      <label for="three">Daily</label>
+      <input type="radio" id="four" :value="false" v-model="incremental">
+      <label for="four">Total</label>
+    </div>
     <input type="checkbox" id="checkbox" v-model="perMilionCount">
     <label for="checkbox">Per Milion</label>
     <div class="dates-range">
@@ -18,6 +24,7 @@
       :headerLabels="headerLabels"
       :vAxisTitle="deathsLabel"
       :chartType="chartType"
+      :incremental="incremental"
     />
     <h1>{{countries}} {{confirmedLabel}}</h1>
     <LineChart
@@ -25,6 +32,7 @@
       :headerLabels="headerLabels"
       :vAxisTitle="confirmedLabel"
       :chartType="chartType"
+      :incremental="incremental"
     />
   </div>
 </template>
@@ -72,6 +80,7 @@ export default {
       perMilionCount: false,
       minDateIndex: 0,
       chartType: 'LineChart',
+      incremental: false,
     };
   },
   computed: {
