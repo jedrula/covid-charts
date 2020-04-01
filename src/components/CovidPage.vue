@@ -15,6 +15,9 @@
       :rowToCountry="rowToCountry"
       :selectedPopulations="selectedPopulations"
     />
+    <div>
+      <GeoChart />
+    </div>
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
       <div>Population data taken from <a target="_blank" href="https://github.com/samayo/country-json/edit/master/src/country-by-population.json">country-json</a></div>
@@ -27,6 +30,7 @@
 import * as csv from "csvtojson";
 
 import CountryCovidChart from './CountryCovidChart.vue';
+import GeoChart from './GeoChart.vue';
 import countryByPopulation from '../data/country-by-population.json';
 
 
@@ -96,6 +100,7 @@ export default {
   },
   components: {
     CountryCovidChart,
+    GeoChart,
   },
   data() {
     return {
