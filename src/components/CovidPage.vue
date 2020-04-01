@@ -68,7 +68,14 @@ function rowToCountry(row) {
 
 export default {
   async beforeRouteEnter(to, from, next) {
-    const [covidDeathsFullJson, covidConfirmedFullJson] = await Promise.all([getJsonFromCsvUrl(deathsGlobalUrl), getJsonFromCsvUrl(confirmedGlobalUrl)]);
+    /* eslint-disable no-undef */
+    // google is imported in index.html
+    const loadGoogleChartsLib = new Promise((resolve) => google.charts.setOnLoadCallback(resolve));
+    const [covidDeathsFullJson, covidConfirmedFullJson] = await Promise.all([
+      getJsonFromCsvUrl(deathsGlobalUrl),
+      getJsonFromCsvUrl(confirmedGlobalUrl),
+      loadGoogleChartsLib
+    ]);
 
     // Missing these:
     // Diamond Princess

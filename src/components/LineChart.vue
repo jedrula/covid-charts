@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import get from 'lodash/get';
 // https://www.npmjs.com/package/vue-multiselect
 
 /* eslint-disable no-undef */
@@ -22,22 +23,39 @@ export default {
       type: String,
       required: true,
     },
+    incremental: {
+      type: Boolean,
+      default: false,
+    }
   },
   mounted() {
     google.charts.setOnLoadCallback(() => this.drawChart());
   },
 
   watch: {
-    rows() {
+    chartData() {
       this.drawChart();
     },
   },
 
-  methods: {
-    drawChart() {
-      const data = new google.visualization.arrayToDataTable([this.headerLabels, ...this.rows]);
-
-      const options = {
+  computed: {
+    rowsIncremental() {
+      return this.rows.map(([date, ...values], index) => {
+        const newValues = values.map((value, valueIndex) => {
+          const prevValue = get(this.rows, [index - 1, valueIndex + 1]);
+          return value - prevValue;
+        });
+        return [date, ...newValues];
+      });
+    },
+    chartData() {
+      return new google.visualization.arrayToDataTable([this.headerLabels, ...this.shownRows]);
+    },
+    shownRows() {
+      return this.incremental ? this.rowsIncremental : this.rows;
+    },
+    options() {
+      return {
         hAxis: {
           title: 'Date',
           format: 'dd.MM',
@@ -47,9 +65,13 @@ export default {
         },
         backgroundColor: '#f1f8e9'
       };
+    },
+  },
 
-      const chart = new google.visualization.LineChart(this.$refs.chart);
-      chart.draw(data, options);
+  methods: {
+    drawChart() {
+      const chart = new google.visualization.ColumnChart(this.$refs.chart);
+      chart.draw(this.chartData, this.options);
     },
   }
 }
