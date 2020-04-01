@@ -16,7 +16,7 @@
       :selectedPopulations="selectedPopulations"
     />
     <div>
-      <GeoChart />
+      <GeoChart :intensity="{ Poland: 0.8, Czechia: 0.3 }"/>
     </div>
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
