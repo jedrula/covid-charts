@@ -38,15 +38,14 @@
 </template>
 
 <script>
-import omit from 'lodash/omit';
 import LineChart from './LineChart.vue';
-
-function getDatesData(row) {
-  return omit(row, ['Country/Region', 'Province/State', 'Lat', 'Long']);
-}
 
 export default {
   props: {
+    allDates: {
+      type: Array,
+      required: true,
+    },
     deathsRows: {
       type: Array,
       required: true,
@@ -89,10 +88,6 @@ export default {
     },
     confirmedLabel() {
       return this.perMilionCount ? 'Confirmed cases (Per Milion)' : 'Confirmed cases'
-    },
-    allDates() {
-      const datesData = getDatesData(this.deathsRows[0]);
-      return Object.keys(datesData);
     },
     dates() {
       return this.allDates.slice(this.minDateIndex);

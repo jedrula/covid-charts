@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <div v-if="!loaded">loading</div>
+  <div v-else>
     <div v-for="(selectedIndex, index) in selectedIndexes" :key="index">
       <select v-model="selectedIndexes[index]">
         <option disabled value="">Please select Country + Province</option>
@@ -10,13 +11,18 @@
     <button @click="selectedIndexes.push(0)">Add</button>
     <CountryCovidChart
       v-if="covidDeathsJson.length && selectedIndexes.length"
+      :allDates="allDates"
       :deathsRows="selectedDeathRows"
       :confirmedRows="selectedConfirmedRows"
       :rowToCountry="rowToCountry"
       :selectedPopulations="selectedPopulations"
     />
     <div>
-      <GeoChart :intensity="{ Poland: 0.8, Czechia: 0.3 }"/>
+      <GeoChart :intensity="geoChartConfirmedIntensity"/>
+    </div>
+
+    <div>
+      <GeoChart :intensity="geoChartDeathsIntensity"/>
     </div>
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
@@ -27,6 +33,7 @@
 </template>
 
 <script>
+import omit from 'lodash/omit';
 import * as csv from "csvtojson";
 
 import CountryCovidChart from './CountryCovidChart.vue';
@@ -47,6 +54,10 @@ const findPopulationData = (row) => {
 
 const deathsGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
 const confirmedGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv';
+
+function getDatesData(row) {
+  return omit(row, ['Country/Region', 'Province/State', 'Lat', 'Long']);
+}
 
 async function getCsvTextFromUrl(url) {
   const response = await fetch(url);
@@ -70,12 +81,60 @@ function rowToCountry(row) {
   return option;
 }
 
+const countryRows = (all, country) => all.filter(row => row['Country/Region'].includes(country))
+
+function getSumForDate(rows, date) {
+  return rows.map(row => row[date]).map(x => parseInt(x, 10)).reduce((total, single) => total + single, 0)
+}
+
+function getSums(rows, dates) {
+  let sums = {};
+  dates.forEach((date) => {
+    sums[date] = getSumForDate(rows, date);
+  })
+  return sums;
+}
+
+function getSummedRow(allRows, country, dates) {
+  const rows = countryRows(allRows, country);
+  let row = {
+    ['Province/State']: '',
+    ['Country/Region']: country,
+    Lat: 'TODO',
+    Long: 'TODO',
+  };
+  const sums = getSums(rows, dates);
+  return {
+    ...row,
+    ...sums,
+  };
+}
+
+const countriesToSum = ['Australia', 'Canada', 'China'];
+
+function withSummed(rows, dates) {
+  const summedRows = countriesToSum.map((country) => getSummedRow(rows, country, dates));
+  return [
+    ...rows,
+    ...summedRows,
+  ];
+}
+
+function geoChartIntensity(rows, date) {
+  let intensity = {};
+  const maxValue = Math.max(...rows.map(row => row[date]));
+  rows.forEach((row) => {
+    intensity[rowToCountry(row)] = row[date] / maxValue;
+  });
+  return intensity;
+}
+
 export default {
   async beforeRouteEnter(to, from, next) {
     /* eslint-disable no-undef */
     // google is imported in index.html
     const loadGoogleChartsLib = new Promise((resolve) => google.charts.setOnLoadCallback(resolve));
-    const [covidDeathsFullJson, covidConfirmedFullJson] = await Promise.all([
+    const [covidDeathsFetched, covidConfirmedFetched] = await Promise.all([
       getJsonFromCsvUrl(deathsGlobalUrl),
       getJsonFromCsvUrl(confirmedGlobalUrl),
       loadGoogleChartsLib
@@ -94,8 +153,9 @@ export default {
     // Plus All of those with provinces: Australia, Canada, China, Congo, France, Netherlands
     // console.log(countries);
     next((vm) => {
-      vm.covidDeathsFullJson = covidDeathsFullJson;
-      vm.covidConfirmedFullJson = covidConfirmedFullJson;
+      vm.loaded = true;
+      vm.covidDeathsFetched = covidDeathsFetched;
+      vm.covidConfirmedFetched = covidConfirmedFetched;
     });
   },
   components: {
@@ -104,8 +164,9 @@ export default {
   },
   data() {
     return {
-      covidDeathsFullJson: [],
-      covidConfirmedFullJson: [],
+      loaded: false,
+      covidDeathsFetched: [],
+      covidConfirmedFetched: [],
       selectedIndexes: [
         36, // Czechia
         115, // Poland
@@ -113,11 +174,31 @@ export default {
     };
   },
   computed: {
+    allDates() {
+      const datesData = getDatesData(this.covidDeathsFetched[0]);
+      return Object.keys(datesData);
+    },
+    geoChartDate() {
+      // TODO
+      return this.allDates[this.allDates.length - 1];
+    },
+    geoChartDeathsIntensity() {
+      return geoChartIntensity(this.covidDeathsFull, this.geoChartDate);
+    },
+    geoChartConfirmedIntensity() {
+      return geoChartIntensity(this.covidConfirmedFull, this.geoChartDate);
+    },
+    covidDeathsFull() {
+      return withSummed(this.covidDeathsFetched, this.allDates)
+    },
+    covidConfirmedFull() {
+      return withSummed(this.covidConfirmedFetched, this.allDates)
+    },
     covidDeathsJson() {
-      return this.covidDeathsFullJson.filter(findPopulationData);
+      return this.covidDeathsFull.filter(findPopulationData);
     },
     covidConfirmedJson() {
-      return this.covidConfirmedFullJson.filter(findPopulationData);
+      return this.covidConfirmedFull.filter(findPopulationData);
     },
     selectedDeathRows() {
       return this.selectedIndexes.map((selectedIndex) => this.covidDeathsJson[selectedIndex]);
