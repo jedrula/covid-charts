@@ -186,10 +186,10 @@ export default {
       return this.allDates[this.allDates.length - 1];
     },
     geoChartDeathsIntensity() {
-      return geoChartIntensity(this.covidDeathsFull, this.geoChartDate);
+      return geoChartIntensity(this.covidDeathsJson, this.geoChartDate);
     },
     geoChartConfirmedIntensity() {
-      return geoChartIntensity(this.covidConfirmedFull, this.geoChartDate);
+      return geoChartIntensity(this.covidConfirmedJson, this.geoChartDate);
     },
     covidDeathsFull() {
       return withSummed(this.covidDeathsFetched, this.allDates)
