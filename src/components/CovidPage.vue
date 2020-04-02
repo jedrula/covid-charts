@@ -18,11 +18,13 @@
       :selectedPopulations="selectedPopulations"
     />
     <div>
-      <GeoChart :intensity="geoChartConfirmedIntensity"/>
+      <input type="radio" id="deathsChoice" value="deaths" v-model="statisticType">
+      <label for="deathsChoice">Deaths</label>
+      <input type="radio" id="confirmedChoice" value="confirmed" v-model="statisticType">
+      <label for="confirmedChoice">Confirmed</label>
     </div>
-
     <div>
-      <GeoChart :intensity="geoChartDeathsIntensity"/>
+      <GeoChart :intensity="statisticType === 'deaths' ? geoChartDeathsIntensity : geoChartConfirmedIntensity"/>
     </div>
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
@@ -110,7 +112,7 @@ function getSummedRow(allRows, country, dates) {
   };
 }
 
-const countriesToSum = ['Australia', 'Canada', 'China'];
+const countriesToSum = ['Australia', 'Canada', 'Congo', 'China'];
 
 function withSummed(rows, dates) {
   const summedRows = countriesToSum.map((country) => getSummedRow(rows, country, dates));
@@ -164,6 +166,7 @@ export default {
   },
   data() {
     return {
+      statisticType: 'deaths',
       loaded: false,
       covidDeathsFetched: [],
       covidConfirmedFetched: [],
