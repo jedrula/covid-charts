@@ -9,13 +9,17 @@
       <button @click="selectedIndexes.splice(index, 1)">Remove</button>
     </div>
     <button @click="selectedIndexes.push(0)">Add</button>
+    <div>
+      <input type="checkbox" id="checkbox" v-model="perMilionCount">
+      <label for="checkbox">Per Milion</label>
+    </div>
     <CountryCovidChart
       v-if="covidDeathsJson.length && selectedIndexes.length"
       :allDates="allDates"
       :deathsRows="selectedDeathRows"
       :confirmedRows="selectedConfirmedRows"
+      :perMilionCount="perMilionCount"
       :rowToCountry="rowToCountry"
-      :selectedPopulations="selectedPopulations"
     />
     <div>
       <input type="radio" id="deathsChoice" value="deaths" v-model="statisticType">
@@ -36,6 +40,7 @@
 
 <script>
 import omit from 'lodash/omit';
+import mapValues from 'lodash/mapValues';
 import * as csv from "csvtojson";
 
 import CountryCovidChart from './CountryCovidChart.vue';
@@ -131,6 +136,14 @@ function geoChartIntensity(rows, date) {
   return intensity;
 }
 
+function perMilionRows(rows, populaionsInMillions) {
+  return rows.map((row, rowIndex) => {
+    const datesData = getDatesData(row);
+    const perMilionValues = mapValues(datesData, value => Math.round(value / populaionsInMillions[rowIndex]))
+    return { ...row, ...perMilionValues };
+  })
+}
+
 export default {
   async beforeRouteEnter(to, from, next) {
     /* eslint-disable no-undef */
@@ -166,6 +179,15 @@ export default {
   },
   data() {
     return {
+      // Some explanation on perMilionCount
+      // Say 300 died
+      // nation has 40 milion
+      // if it had 1 milion 40 times less would die so 300 / 40
+
+      // Say 3 died
+      // nation has 100'000
+      // if it had 1 milion 30 would die
+      perMilionCount: false,
       statisticType: 'deaths',
       loaded: false,
       covidDeathsFetched: [],
@@ -203,14 +225,25 @@ export default {
     covidConfirmedJson() {
       return this.covidConfirmedFull.filter(findPopulationData);
     },
+    covidDeathsJsonPerMilion() {
+      return perMilionRows(this.covidDeathsJson, this.populationsInMillions);
+    },
+    covidConfirmedJsonPerMilion() {
+      return perMilionRows(this.covidConfirmedJson, this.populationsInMillions);
+    },
+    covidJson() {
+      return this.perMilionCount
+        ? { confirmed: this.covidConfirmedJsonPerMilion, deaths: this.covidDeathsJsonPerMilion }
+        : { confirmed: this.covidConfirmedJson, deaths: this.covidDeathsJson };
+    },
     selectedDeathRows() {
-      return this.selectedIndexes.map((selectedIndex) => this.covidDeathsJson[selectedIndex]);
+      return this.selectedIndexes.map((selectedIndex) => this.covidJson.deaths[selectedIndex]);
     },
     selectedConfirmedRows() {
-      return this.selectedIndexes.map((selectedIndex) => this.covidConfirmedJson[selectedIndex]);
+      return this.selectedIndexes.map((selectedIndex) => this.covidJson.confirmed[selectedIndex]);
     },
-    selectedPopulations() {
-      return this.selectedDeathRows.map(findPopulationData);
+    populationsInMillions() {
+      return this.covidDeathsJson.map(findPopulationData).map(({ population }) => (population / 1000000));
     },
   },
   methods: {

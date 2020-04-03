@@ -12,8 +12,6 @@
       <input type="radio" id="four" :value="false" v-model="incremental">
       <label for="four">Total</label>
     </div>
-    <input type="checkbox" id="checkbox" v-model="perMilionCount">
-    <label for="checkbox">Per Milion</label>
     <div class="dates-range">
       <span class="start-date-label">Adjust start date ({{startDate}})</span>
       <input type="range" min="0" :max="allDates.length - 2" v-model="minDateIndex">
@@ -54,12 +52,12 @@ export default {
       type: Array,
       required: true,
     },
-    rowToCountry: {
-      type: Function,
+    perMilionCount: {
+      type: Boolean,
       required: true,
     },
-    selectedPopulations: {
-      type: Array,
+    rowToCountry: {
+      type: Function,
       required: true,
     },
   },
@@ -68,15 +66,6 @@ export default {
   },
   data() {
     return {
-      // Some explanation on perMilionCount
-      // Say 300 died
-      // nation has 40 milion
-      // if it had 1 milion 40 times less would die so 300 / 40
-
-      // Say 3 died
-      // nation has 100'000
-      // if it had 1 milion 30 would die
-      perMilionCount: false,
       minDateIndex: 0,
       chartType: 'LineChart',
       incremental: false,
@@ -102,25 +91,14 @@ export default {
       ];
     },
     deathsData() {
-      return this.dates.map((dateString) => ([new Date(dateString), ...this.deathsRows.map((row, rowIndex) => this.getValue(row, rowIndex, dateString))]));
+      return this.dates.map((dateString) => ([new Date(dateString), ...this.deathsRows.map((row) =>  row[dateString])]));
     },
     confirmedData() {
-      return this.dates.map((dateString) => ([new Date(dateString), ...this.confirmedRows.map((row, rowIndex) => this.getValue(row, rowIndex, dateString))]));
+      return this.dates.map((dateString) => ([new Date(dateString), ...this.confirmedRows.map((row) =>  row[dateString])]));
     },
     countries() {
       return this.deathsRows.map((row) => this.rowToCountry(row))
-    },
-    getValue() {
-      return (row, rowIndex, dateString) => {
-        const total = row[dateString];
-        return this.perMilionCount
-          ? Math.round(total / this.populaionsInMillions[rowIndex])
-          : total;
-      };
-    },
-    populaionsInMillions() {
-      return this.selectedPopulations.map(data => (data.population / 1000000));
-    },
+    },// TODO move radio button ???? or already moved ?
   },
 };
 </script>
