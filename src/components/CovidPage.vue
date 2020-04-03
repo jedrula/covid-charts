@@ -28,7 +28,7 @@
       <label for="confirmedChoice">Confirmed</label>
     </div>
     <div>
-      <GeoChart :intensity="statisticType === 'deaths' ? geoChartDeathsIntensity : geoChartConfirmedIntensity"/>
+      <GeoChart :intensity="intensity"/>
     </div>
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
@@ -39,6 +39,8 @@
 </template>
 
 <script>
+/* eslint-disable no-debugger */
+
 import omit from 'lodash/omit';
 import mapValues from 'lodash/mapValues';
 import * as csv from "csvtojson";
@@ -56,7 +58,10 @@ import countryByPopulation from '../data/country-by-population.json';
 // TODO move to standalone file
 const findPopulationData = (row) => {
   const covidCountry = rowToCountry(row);
-  return countryByPopulation.find(({ country }) => country === covidCountry);
+  const populationEntry = countryByPopulation.find(({ country }) => country === covidCountry);
+  if (populationEntry && populationEntry.population > 400000) {
+    return populationEntry;
+  }
 }
 
 const deathsGlobalUrl = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv';
@@ -127,9 +132,8 @@ function withSummed(rows, dates) {
   ];
 }
 
-function geoChartIntensity(rows, date) {
+function geoChartIntensity(rows, maxValue, date) {
   let intensity = {};
-  const maxValue = Math.max(...rows.map(row => row[date]));
   rows.forEach((row) => {
     intensity[rowToCountry(row)] = row[date] / maxValue;
   });
@@ -199,6 +203,11 @@ export default {
     };
   },
   computed: {
+    intensity() {
+      return this.statisticType === 'deaths'
+        ? this.geoChartDeathsIntensity
+        : this.geoChartConfirmedIntensity;
+    },
     allDates() {
       const datesData = getDatesData(this.covidDeathsFetched[0]);
       return Object.keys(datesData);
@@ -207,11 +216,21 @@ export default {
       // TODO
       return this.allDates[this.allDates.length - 1];
     },
+    maxValueDeaths() {
+      const rowsWithValues = this.covidJson.deaths.map((row) => Object.values(getDatesData(row)));
+      const maxes = rowsWithValues.map((values) => Math.max(...values));
+      return Math.max(...maxes);
+    },
+    maxValueConfirmed() {
+      const rowsWithValues = this.covidJson.confirmed.map((row) => Object.values(getDatesData(row)));
+      const maxes = rowsWithValues.map((values) => Math.max(...values));
+      return Math.max(...maxes);
+    },
     geoChartDeathsIntensity() {
-      return geoChartIntensity(this.covidDeathsJson, this.geoChartDate);
+      return geoChartIntensity(this.covidJson.deaths, this.maxValueDeaths, this.geoChartDate);
     },
     geoChartConfirmedIntensity() {
-      return geoChartIntensity(this.covidConfirmedJson, this.geoChartDate);
+      return geoChartIntensity(this.covidJson.confirmed, this.maxValueConfirmed ,this.geoChartDate);
     },
     covidDeathsFull() {
       return withSummed(this.covidDeathsFetched, this.allDates)
