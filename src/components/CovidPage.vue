@@ -196,10 +196,7 @@ export default {
       loaded: false,
       covidDeathsFetched: [],
       covidConfirmedFetched: [],
-      selectedIndexes: [
-        36, // Czechia
-        115, // Poland
-      ],
+      selectedIndexes: [],
     };
   },
   computed: {
