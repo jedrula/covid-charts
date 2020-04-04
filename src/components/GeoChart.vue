@@ -18,6 +18,7 @@
       :key="country"
       :d="countriesPaths[country]"
       :style="{ fill: getTresholdColor(intensity[country]) }"
+      @click="$emit('clickedCountry', country)"
     >
       <title>{{ country }}</title>
     </path>

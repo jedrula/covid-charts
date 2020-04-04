@@ -1,6 +1,22 @@
 <template>
   <div v-if="!loaded">loading</div>
   <div v-else>
+    <div>
+      <input type="checkbox" id="checkbox" v-model="perMilionCount">
+      <label for="checkbox">Per Milion</label>
+    </div>
+    <div>
+      <input type="radio" id="deathsChoice" value="deaths" v-model="statisticType">
+      <label for="deathsChoice">Deaths</label>
+      <input type="radio" id="confirmedChoice" value="confirmed" v-model="statisticType">
+      <label for="confirmedChoice">Confirmed</label>
+    </div>
+    <div>
+      <GeoChart
+        :intensity="intensity"
+        @clickedCountry="toggleCountry"
+      />
+    </div>
     <div v-for="(selectedIndex, index) in selectedIndexes" :key="index">
       <select v-model="selectedIndexes[index]">
         <option disabled value="">Please select Country + Province</option>
@@ -9,10 +25,6 @@
       <button @click="selectedIndexes.splice(index, 1)">Remove</button>
     </div>
     <button @click="selectedIndexes.push(0)">Add</button>
-    <div>
-      <input type="checkbox" id="checkbox" v-model="perMilionCount">
-      <label for="checkbox">Per Milion</label>
-    </div>
     <CountryCovidChart
       v-if="covidDeathsJson.length && selectedIndexes.length"
       :allDates="allDates"
@@ -21,15 +33,6 @@
       :perMilionCount="perMilionCount"
       :rowToCountry="rowToCountry"
     />
-    <div>
-      <input type="radio" id="deathsChoice" value="deaths" v-model="statisticType">
-      <label for="deathsChoice">Deaths</label>
-      <input type="radio" id="confirmedChoice" value="confirmed" v-model="statisticType">
-      <label for="confirmedChoice">Confirmed</label>
-    </div>
-    <div>
-      <GeoChart :intensity="intensity"/>
-    </div>
     <footer>
       <div>Covid data taken from <a target="_blank" href="https://github.com/CSSEGISandData/COVID-19">JHU CSSE</a></div>
       <div>Population data taken from <a target="_blank" href="https://github.com/samayo/country-json/edit/master/src/country-by-population.json">country-json</a></div>
@@ -264,6 +267,15 @@ export default {
   },
   methods: {
     rowToCountry,
+    toggleCountry(country) {
+      const clickedCountryIndex = this.covidJson.confirmed.findIndex(row => rowToCountry(row) === country);
+      if (this.selectedIndexes.includes(clickedCountryIndex)) {
+        this.selectedIndexes = this.selectedIndexes.filter((index) => index !== clickedCountryIndex);
+      }
+      else {
+        this.selectedIndexes.push(clickedCountryIndex);
+      }
+    },
   },
 }
 </script>
