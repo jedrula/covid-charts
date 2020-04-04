@@ -13,11 +13,14 @@
     width="1009.6727"
     height="665.96301">
 
-    <path v-for="country in countries"
+    <path
+      v-for="country in countries"
       :key="country"
       :d="countriesPaths[country]"
       :style="{ fill: getTresholdColor(intensity[country]) }"
-    />
+    >
+      <title>{{ country }}</title>
+    </path>
   </svg>
 </div>
 </template>
